@@ -12,8 +12,10 @@ import 'moment/locale/pt-br'; // Importa o locale em português para o Moment.js
 import { TaskService } from '../../services/task.service';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { CurrencyMaskDirective } from '../../../shared/directives/currecy-mastk.directive';
 const moment = _rollupMoment || _moment;
 moment.locale('pt-br'); // Define o locale para 'pt-br'
+
 
 export const MY_FORMATS = {
   parse: {
@@ -41,7 +43,8 @@ export const MY_FORMATS = {
     MatInputModule,
     MatButtonModule,
     MatDatepickerModule,
-    MatToolbarModule
+    MatToolbarModule,
+    CurrencyMaskDirective
   ],
   templateUrl: './newtask.component.html',
   styleUrls: ['./newtask.component.scss']

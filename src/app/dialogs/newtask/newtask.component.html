@@ -10,9 +10,8 @@
 
   <mat-form-field appearance="outline">
     <mat-label>Custo</mat-label>
-    <input matInput formControlName="cost" required>
+    <input matInput formControlName="cost" appCurrencyMask required>
   </mat-form-field>
-
   <mat-form-field appearance="outline">
     <mat-label>Data Limite</mat-label>
     <input matInput [matDatepicker]="picker"  formControlName="endDate"  required>
