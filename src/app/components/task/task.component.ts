@@ -14,6 +14,8 @@ import {
 } from '@angular/material/dialog';
 import { NewtaskComponent } from '../../dialogs/newtask/newtask.component';
 import { Router } from '@angular/router';
+import { GlobalConstants } from '../../../shared/GlobalConstants';
+import { TaskdeleteComponent } from '../../dialogs/taskdelete/taskdelete.component';
 
 @Component({
   selector: 'app-task',
@@ -74,5 +76,36 @@ export class TaskComponent implements OnInit {
     dialogRef.componentInstance.taskOnAdd.subscribe(() => {
       this.tableData();
     });
+  }
+  handleDeleteTask(values: any) {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.data = {
+      message: '' + values.name + ' tarefa ',
+    };
+    dialogConfig.width = '250px';
+
+    const dialogRef = this.dialog.open(TaskdeleteComponent, dialogConfig);
+    const sub = dialogRef.componentInstance.onEmitDelete.subscribe(() => {
+      this.deleteTask(values.id);
+      dialogRef.close();
+    });
+  }
+
+  deleteTask(id: any) {
+    this.taskService.deleteTask(id).subscribe(
+      (response: any) => {
+        this.tableData();
+        this.responseMessage = response?.message;
+        this.snackBar.openSnackbar(response.message, 'success');
+      },
+      (error: any) => {
+        if (error.error?.message) {
+          this.responseMessage = error.error.message;
+        } else {
+          this.responseMessage = GlobalConstants.genericError;
+        }
+        this.snackBar.openSnackbar(this.responseMessage, 'error');
+      }
+    );
   }
 }

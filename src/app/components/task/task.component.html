@@ -27,7 +27,9 @@
           <button mat-flat-button><mat-icon>arrow_upward</mat-icon></button>
           <button mat-flat-button><mat-icon>arrow_downward</mat-icon></button>
           <button mat-flat-button><mat-icon>edit</mat-icon></button>
-          <button mat-flat-button><mat-icon>delete</mat-icon></button>
+          <button mat-flat-button (click)="handleDeleteTask(element)">
+            <mat-icon>delete</mat-icon>
+          </button>
         </td>
       </ng-container>
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>

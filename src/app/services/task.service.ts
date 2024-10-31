@@ -20,4 +20,10 @@ export class TaskService {
       headers: new HttpHeaders().set('Content-Type', 'application/json'),
     });
   }
+
+  deleteTask(id: any): Observable<any> {
+    return this.http.delete(`${this.url}/deleteTask/${id}`, {
+      headers: new HttpHeaders().set('Content-Type', 'application/json'),
+    });
+  }
 }
