@@ -3,7 +3,7 @@ section {
   position: relative;
   margin: 30px auto;
   height: auto;
-  width: 750px;
+  width: 1000px;
   padding: 10px;
   >h1 {
     margin-top: 20px;
@@ -17,14 +17,13 @@ section {
   }
 
 }
-th,td{
+td,th{
   text-align: center;
 }
 .card-content {
   padding: 15px;
 }
 .btn-task {
-
   width: 200px;
   background: #4CAF50 !important;
   margin-top: 15px;
@@ -32,6 +31,16 @@ th,td{
   color: white !important;
   font-weight: bold;
   position: relative;
-
-
 }
+
+ng-container {
+  td {
+    button {
+      mat-icon {
+        display: flex;
+      };
+    }
+  }
+}
+
+
