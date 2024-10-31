@@ -13,6 +13,9 @@ import { TaskService } from '../../services/task.service';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { CurrencyMaskDirective } from '../../../shared/directives/currecy-mastk.directive';
+import { GlobalConstants } from '../../../shared/GlobalConstants';
+import { dateNotExpiredValidator } from '../../../shared/dateNotExpiredValidator';
+import { SnackbarService } from '../../services/snackbar.service';
 const moment = _rollupMoment || _moment;
 moment.locale('pt-br'); // Define o locale para 'pt-br'
 
@@ -51,19 +54,22 @@ export const MY_FORMATS = {
 })
 export class NewtaskComponent implements OnInit {
   taskForm!: FormGroup;
+  responseMessage: string = '';
 
   constructor(
     private fb: FormBuilder,
     private taskService: TaskService,
-    private dialogRef: MatDialogRef<NewtaskComponent>
+    private dialogRef: MatDialogRef<NewtaskComponent>,
+    private snackBar: SnackbarService
   ) {}
 
   ngOnInit(): void {
     this.taskForm = this.fb.group({
-      name: ['', Validators.required],
-      cost: ['', Validators.required],
-      endDate: ['', Validators.required]
+      name: [null, [Validators.required,Validators.pattern(GlobalConstants.nameRegexWithAccents)]],
+      cost: [null, [Validators.required]],
+      endDate: [null, [Validators.required, dateNotExpiredValidator()]]
     });
+
   }
 
   onSubmit(): void {
@@ -72,12 +78,21 @@ export class NewtaskComponent implements OnInit {
         ...this.taskForm.value,
         endDate: this.taskForm.value.endDate ? moment(this.taskForm.value.endDate).format('YYYY-MM-DD') : null
       };
+
       this.taskService.addTask(formValue).subscribe(
         (response) => {
           this.dialogRef.close(response);
+          this.responseMessage = response.message;
+          this.snackBar.openSnackbar(this.responseMessage, 'sucess');
+
         },
-        (error) => {
-          console.error('Error adding task:', error);
+        (error:any) => {
+          if(error.error?.message) {
+            this.responseMessage = error.error?.message;
+          } else {
+            this.responseMessage = GlobalConstants.genericError;
+          }
+          this.snackBar.openSnackbar(this.responseMessage, 'error');
         }
       );
     }

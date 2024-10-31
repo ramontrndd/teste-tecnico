@@ -1,12 +1,18 @@
 import { AbstractControl, ValidatorFn } from '@angular/forms';
+import  moment from 'moment';
 
 export function dateNotExpiredValidator(): ValidatorFn {
   return (control: AbstractControl): { [key: string]: any } | null => {
-    const selectedDate = new Date(control.value);
-    const today = new Date();
-    today.setHours(0, 0, 0, 0); // Remove horas, minutos, segundos e milissegundos
+    const selectedDate = moment(control.value);
 
-    // Verifica se a data selecionada é anterior à data atual
-    return selectedDate < today ? { 'dateExpired': true } : null;
+    // Fixar a data atual no dia anterior ao dia atual
+    const now = moment().subtract(1, 'days');
+
+    // Verifica se a data atual é anterior à data selecionada, incluindo horas, minutos e segundos
+    if (now.isAfter(selectedDate)) {
+      return { 'dateExpired': true };
+    } else {
+      return null;
+    }
   };
 }

@@ -2,19 +2,54 @@
 <mat-toolbar color="primary">
     <span>Criar nova Tarefa</span>
 </mat-toolbar>
-<form [formGroup]="taskForm" (ngSubmit)="onSubmit()">
+
+
+<form [formGroup]="taskForm">
   <mat-form-field appearance="outline">
     <mat-label>Nome da Tarefa</mat-label>
-    <input matInput formControlName="name" required>
+    <input matInput formControlName="name" required placeholder="Digite o nome da Tarefa">
+    @if (taskForm.controls['name'].touched &&
+          taskForm.controls['name'].invalid) {
+              <mat-error>
+                @if(taskForm.controls['name'].errors?.['required']){
+                  <span> Campo Obrigátorio</span>
+                }
+                @if(taskForm.controls['name'].errors?.['pattern']){
+                  <span>Apenas letras e numeros</span>
+                }
+              </mat-error>
+
+          }
   </mat-form-field>
+
 
   <mat-form-field appearance="outline">
     <mat-label>Custo</mat-label>
-    <input matInput formControlName="cost" appCurrencyMask required>
+    <input matInput formControlName="cost" appCurrencyMask placeholder="Digite somente numeros">
+    @if (taskForm.controls['cost'].touched &&
+          taskForm.controls['cost'].invalid){
+      <mat-error>
+        @if(taskForm.controls['cost'].errors?.['required']){
+          <span> Campo Obrigátorio</span>
+        }</mat-error>
+
+    }
   </mat-form-field>
+
   <mat-form-field appearance="outline">
     <mat-label>Data Limite</mat-label>
-    <input matInput [matDatepicker]="picker"  formControlName="endDate"  required>
+    <input matInput [matDatepicker]="picker"  formControlName="endDate"  required placeholder="Selecione uma data valida">
+    @if (taskForm.controls['endDate'].touched &&
+          taskForm.controls['endDate'].invalid) {
+      <mat-error>
+        @if(taskForm.controls['endDate'].errors?.['required']){
+          <span> Campo Obrigátorio</span>}
+          @if(taskForm.controls['endDate'].errors?.['dateExpired']){
+            <span> Selecione uma data atual para a tarefa.</span>
+          }
+        </mat-error>
+
+    }
     <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
     <mat-datepicker #picker></mat-datepicker>
   </mat-form-field>
