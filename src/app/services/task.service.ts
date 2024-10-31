@@ -4,23 +4,20 @@ import { environment } from '../../environments/environment.development';
 import { Observable } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class TaskService {
+  constructor(private http: HttpClient) {}
 
-  constructor(private http:HttpClient) {
+  url = environment.apiUrl;
 
-   }
-
-   url = environment.apiUrl;
-
-   getTasks(): Observable<any> {
+  getTasks(): Observable<any> {
     return this.http.get(`${this.url}/getTasks`);
   }
 
   addTask(data: any): Observable<any> {
     return this.http.post(`${this.url}/createTask`, data, {
-      headers: new HttpHeaders().set('Content-Type', 'application/json')
+      headers: new HttpHeaders().set('Content-Type', 'application/json'),
     });
   }
 }

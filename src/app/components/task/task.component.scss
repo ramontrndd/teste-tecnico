@@ -1,23 +1,22 @@
-
 section {
   position: relative;
   margin: 30px auto;
   height: auto;
   width: 1000px;
   padding: 10px;
-  >h1 {
+  > h1 {
     margin-top: 20px;
     text-align: center;
     font-weight: bold;
   }
-  >div {
+  > div {
     display: flex;
     align-items: center;
     justify-content: space-between;
   }
-
 }
-td,th{
+td,
+th {
   text-align: center;
 }
 .card-content {
@@ -25,7 +24,7 @@ td,th{
 }
 .btn-task {
   width: 200px;
-  background: #4CAF50 !important;
+  background: #4caf50 !important;
   margin-top: 15px;
   text-transform: uppercase;
   color: white !important;
@@ -38,9 +37,7 @@ ng-container {
     button {
       mat-icon {
         display: flex;
-      };
+      }
     }
   }
 }
-
-

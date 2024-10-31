@@ -1,5 +1,5 @@
 import { AbstractControl, ValidatorFn } from '@angular/forms';
-import  moment from 'moment';
+import moment from 'moment';
 
 export function dateNotExpiredValidator(): ValidatorFn {
   return (control: AbstractControl): { [key: string]: any } | null => {
@@ -10,7 +10,7 @@ export function dateNotExpiredValidator(): ValidatorFn {
 
     // Verifica se a data atual é anterior à data selecionada, incluindo horas, minutos e segundos
     if (now.isAfter(selectedDate)) {
-      return { 'dateExpired': true };
+      return { dateExpired: true };
     } else {
       return null;
     }

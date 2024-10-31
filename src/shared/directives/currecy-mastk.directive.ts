@@ -1,13 +1,5 @@
-import {
-  Directive,
-  ElementRef,
-  HostListener,
-  forwardRef
-} from '@angular/core';
-import {
-  ControlValueAccessor,
-  NG_VALUE_ACCESSOR
-} from '@angular/forms';
+import { Directive, ElementRef, HostListener, forwardRef } from '@angular/core';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 @Directive({
   selector: '[appCurrencyMask]',
@@ -16,9 +8,9 @@ import {
     {
       provide: NG_VALUE_ACCESSOR,
       useExisting: forwardRef(() => CurrencyMaskDirective),
-      multi: true
-    }
-  ]
+      multi: true,
+    },
+  ],
 })
 export class CurrencyMaskDirective implements ControlValueAccessor {
   private onChange = (value: any) => {};
@@ -32,7 +24,9 @@ export class CurrencyMaskDirective implements ControlValueAccessor {
     const value = Number(numericValue) / 100;
     // Verifica se o valor excede 100 milhões
     if (value > 100_000_000) {
-      this.el.nativeElement.value = this.formatCurrency((100_000_000 * 100).toString());
+      this.el.nativeElement.value = this.formatCurrency(
+        (100_000_000 * 100).toString()
+      );
       this.onChange(100_000_000); // Define o valor como 100 milhões
     } else {
       this.onChange(value); // Chama a função onChange com o valor formatado
@@ -52,13 +46,14 @@ export class CurrencyMaskDirective implements ControlValueAccessor {
     const numericValue = Number(value) / 100;
     return numericValue.toLocaleString('pt-BR', {
       style: 'currency',
-      currency: 'BRL'
+      currency: 'BRL',
     });
   }
   // Métodos do ControlValueAccessor
   writeValue(value: any): void {
     // Se o valor for nulo ou zero, limpa o campo
-    const numericValue = value != null && value !== 0 ? (value * 100).toString() : '';
+    const numericValue =
+      value != null && value !== 0 ? (value * 100).toString() : '';
     this.el.nativeElement.value = this.formatCurrency(numericValue);
   }
   registerOnChange(fn: any): void {

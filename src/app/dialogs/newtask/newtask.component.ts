@@ -1,10 +1,18 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { provideMomentDateAdapter, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';
+import {
+  provideMomentDateAdapter,
+  MAT_MOMENT_DATE_ADAPTER_OPTIONS,
+} from '@angular/material-moment-adapter';
 import { MAT_DATE_FORMATS } from '@angular/material/core';
 import * as _moment from 'moment';
 import { default as _rollupMoment } from 'moment';
@@ -18,7 +26,6 @@ import { dateNotExpiredValidator } from '../../../shared/dateNotExpiredValidator
 import { SnackbarService } from '../../services/snackbar.service';
 const moment = _rollupMoment || _moment;
 moment.locale('pt-br'); // Define o locale para 'pt-br'
-
 
 export const MY_FORMATS = {
   parse: {
@@ -38,7 +45,7 @@ export const MY_FORMATS = {
   providers: [
     provideMomentDateAdapter(),
     { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS },
-    { provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true } }
+    { provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true } },
   ],
   imports: [
     ReactiveFormsModule,
@@ -47,14 +54,16 @@ export const MY_FORMATS = {
     MatButtonModule,
     MatDatepickerModule,
     MatToolbarModule,
-    CurrencyMaskDirective
+    CurrencyMaskDirective,
   ],
   templateUrl: './newtask.component.html',
-  styleUrls: ['./newtask.component.scss']
+  styleUrls: ['./newtask.component.scss'],
 })
 export class NewtaskComponent implements OnInit {
   taskForm!: FormGroup;
   responseMessage: string = '';
+
+  @Output() taskOnAdd = new EventEmitter();
 
   constructor(
     private fb: FormBuilder,
@@ -65,29 +74,36 @@ export class NewtaskComponent implements OnInit {
 
   ngOnInit(): void {
     this.taskForm = this.fb.group({
-      name: [null, [Validators.required,Validators.pattern(GlobalConstants.nameRegexWithAccents)]],
+      name: [
+        null,
+        [
+          Validators.required,
+          Validators.pattern(GlobalConstants.nameRegexWithAccents),
+        ],
+      ],
       cost: [null, [Validators.required]],
-      endDate: [null, [Validators.required, dateNotExpiredValidator()]]
+      endDate: [null, [Validators.required, dateNotExpiredValidator()]],
     });
-
   }
 
   onSubmit(): void {
     if (this.taskForm.valid) {
       const formValue = {
         ...this.taskForm.value,
-        endDate: this.taskForm.value.endDate ? moment(this.taskForm.value.endDate).format('YYYY-MM-DD') : null
+        endDate: this.taskForm.value.endDate
+          ? moment(this.taskForm.value.endDate).format('YYYY-MM-DD')
+          : null,
       };
 
       this.taskService.addTask(formValue).subscribe(
         (response) => {
           this.dialogRef.close(response);
+          this.taskOnAdd.emit();
           this.responseMessage = response.message;
           this.snackBar.openSnackbar(this.responseMessage, 'sucess');
-
         },
-        (error:any) => {
-          if(error.error?.message) {
+        (error: any) => {
+          if (error.error?.message) {
             this.responseMessage = error.error?.message;
           } else {
             this.responseMessage = GlobalConstants.genericError;

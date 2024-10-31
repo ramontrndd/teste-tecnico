@@ -1,27 +1,31 @@
 @use '@angular/material' as mat;
 
 :root {
-  --primary-color: #2196F3;
+  --primary-color: #2196f3;
   --danger-color: #f44336;
-  --success-color: #4CAF50;
+  --success-color: #4caf50;
   --warning-bg: #ffe281;
   --color-text: #fff;
 }
 
-html, body { height: 100%}
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
-
-
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
+}
 
 .mat-mdc-snack-bar-container {
   &.green-snackbar {
     --mdc-snackbar-container-color: var(--success-color) !important;
     --mat-mdc-snack-bar-button-color: var(--color-text) !important;
-    --mdc-snackbar-supporting-text-color: var(--color-text)!important;
+    --mdc-snackbar-supporting-text-color: var(--color-text) !important;
   }
   &.black-snackbar {
     --mdc-snackbar-container-color: var(--danger-color) !important;
-    --mat-mdc-snack-bar-button-color: var(--color-text)!important;
+    --mat-mdc-snack-bar-button-color: var(--color-text) !important;
     --mdc-snackbar-supporting-text-color: var(--color-text) !important;
   }
   text-align: center;
