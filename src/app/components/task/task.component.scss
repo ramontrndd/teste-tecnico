@@ -32,12 +32,6 @@ th {
   position: relative;
 }
 
-ng-container {
-  td {
-    button {
-      mat-icon {
-        display: flex;
-      }
-    }
-  }
+mat-icon {
+  transform: translateX(5px);
 }

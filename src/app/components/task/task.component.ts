@@ -40,7 +40,7 @@ export class TaskComponent implements OnInit {
     this.tableData();
   }
 
-  displayedColumns: string[] = ['name', 'cost', 'endDate', 'action'];
+  displayedColumns: string[] = ['reorder', 'name', 'cost', 'endDate', 'action'];
   dataSource: any;
   responseMessage: any;
 
@@ -53,9 +53,9 @@ export class TaskComponent implements OnInit {
         if (error.error?.message) {
           this.responseMessage = error.error.message;
         } else {
-          this.responseMessage = 'Error occurred while fetching';
+          this.responseMessage = GlobalConstants.genericError;
         }
-        this.snackBar.openSnackbar(this.responseMessage, 'error');
+        this.snackBar.openSnackbar(this.responseMessage, GlobalConstants.error);
       }
     );
   }
