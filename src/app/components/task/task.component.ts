@@ -7,11 +7,7 @@ import { CdkDrag, CdkDragHandle } from '@angular/cdk/drag-drop';
 import { SnackbarService } from '../../services/snackbar.service';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { CommonModule } from '@angular/common';
-import {
-  MatDialog,
-  MatDialogConfig,
-  MatDialogRef,
-} from '@angular/material/dialog';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { NewtaskComponent } from '../../dialogs/newtask/newtask.component';
 import { Router } from '@angular/router';
 import { GlobalConstants } from '../../../shared/GlobalConstants';
@@ -67,16 +63,37 @@ export class TaskComponent implements OnInit {
   handleAddTask() {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.data = {
-      action: 'add',
+      action: 'Add',
     };
     dialogConfig.width = '350px';
     dialogConfig.height = '400px';
 
     const dialogRef = this.dialog.open(NewtaskComponent, dialogConfig);
+    this.route.events.subscribe(() => {
+      dialogRef.close();
+    });
     dialogRef.componentInstance.taskOnAdd.subscribe(() => {
       this.tableData();
     });
   }
+
+  handleEditTask(values: any) {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.data = {
+      action: 'Edit',
+      task: values,
+    };
+    dialogConfig.width = '350px';
+    dialogConfig.height = '380px';
+    const dialogRef = this.dialog.open(NewtaskComponent, dialogConfig);
+    this.route.events.subscribe(() => {
+      dialogRef.close();
+    });
+    dialogRef.componentInstance.taskOnEdit.subscribe(() => {
+      this.tableData();
+    });
+  }
+
   handleDeleteTask(values: any) {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.data = {

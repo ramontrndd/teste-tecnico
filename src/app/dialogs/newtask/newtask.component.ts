@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Inject, OnInit, Output } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -18,7 +18,7 @@ import * as _moment from 'moment';
 import { default as _rollupMoment } from 'moment';
 import 'moment/locale/pt-br'; // Importa o locale em português para o Moment.js
 import { TaskService } from '../../services/task.service';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { CurrencyMaskDirective } from '../../../shared/directives/currecy-mastk.directive';
 import { GlobalConstants } from '../../../shared/GlobalConstants';
@@ -62,10 +62,15 @@ export const MY_FORMATS = {
 export class NewtaskComponent implements OnInit {
   taskForm!: FormGroup;
   responseMessage: string = '';
+  dialogAction = 'Add';
+  action: any = 'ADICIONAR';
+  title = 'Nova Tarefa';
 
   @Output() taskOnAdd = new EventEmitter();
+  @Output() taskOnEdit = new EventEmitter();
 
   constructor(
+    @Inject(MAT_DIALOG_DATA) public dialogData: any,
     private fb: FormBuilder,
     private taskService: TaskService,
     private dialogRef: MatDialogRef<NewtaskComponent>,
@@ -84,33 +89,74 @@ export class NewtaskComponent implements OnInit {
       cost: [null, [Validators.required]],
       endDate: [null, [Validators.required, dateNotExpiredValidator()]],
     });
+    if (this.dialogData.action === 'Edit') {
+      this.dialogAction = 'Edit';
+      this.action = 'ATUALIZAR';
+      this.title = 'Editar Tarefa';
+      this.taskForm.patchValue(this.dialogData.task);
+    }
+  }
+  handleSubmit() {
+    if (this.dialogData.action === 'Add') {
+      this.onAdd();
+    } else if (this.dialogData.action === 'Edit') {
+      this.onEdit();
+    } else {
+    }
   }
 
-  onSubmit(): void {
-    if (this.taskForm.valid) {
-      const formValue = {
-        ...this.taskForm.value,
-        endDate: this.taskForm.value.endDate
-          ? moment(this.taskForm.value.endDate).format('YYYY-MM-DD')
-          : null,
-      };
-
-      this.taskService.addTask(formValue).subscribe(
-        (response) => {
-          this.dialogRef.close(response);
-          this.taskOnAdd.emit();
-          this.responseMessage = response.message;
-          this.snackBar.openSnackbar(this.responseMessage, 'sucess');
-        },
-        (error: any) => {
-          if (error.error?.message) {
-            this.responseMessage = error.error?.message;
-          } else {
-            this.responseMessage = GlobalConstants.genericError;
-          }
-          this.snackBar.openSnackbar(this.responseMessage, 'error');
+  onAdd() {
+    const formData = this.taskForm.value;
+    const data = {
+      name: formData.name,
+      cost: formData.cost,
+      endDate: formData.endDate
+        ? moment(formData.endDate).format('YYYY-MM-DD')
+        : null,
+    };
+    this.taskService.addTask(data).subscribe(
+      (response) => {
+        this.dialogRef.close();
+        this.taskOnAdd.emit();
+        this.responseMessage = response.message;
+        this.snackBar.openSnackbar(this.responseMessage, 'success');
+      },
+      (error: any) => {
+        if (error.error?.message) {
+          this.responseMessage = error.error.message;
+        } else {
+          this.responseMessage = GlobalConstants.genericError;
         }
-      );
-    }
+        this.snackBar.openSnackbar(this.responseMessage, GlobalConstants.error);
+      }
+    );
+  }
+
+  onEdit(): void {
+    const formData = this.taskForm.value;
+    const data = {
+      id: this.dialogData.task.id,
+      name: formData.name,
+      cost: formData.cost,
+      endDate: formData.endDate
+        ? moment(formData.endDate).format('YYYY-MM-DD')
+        : null,
+    };
+    this.taskService.updateTask(data).subscribe(
+      (response) => {
+        this.dialogRef.close();
+        this.taskOnEdit.emit();
+        this.responseMessage = response.message;
+        this.snackBar.openSnackbar(this.responseMessage, 'success');
+      },
+      (error: any) => {
+        if (error.error?.message) {
+          this.responseMessage = error.error.message;
+        } else {
+          this.responseMessage = GlobalConstants.genericError;
+        }
+        this.snackBar.openSnackbar(this.responseMessage, GlobalConstants.error);
+      }
+    );
   }
 }

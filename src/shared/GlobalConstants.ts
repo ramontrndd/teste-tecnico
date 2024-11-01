@@ -1,4 +1,5 @@
 export class GlobalConstants {
+  public static error: string = 'error';
   public static genericError: string = 'Algo deu errado tente mais tarde!';
 
   public static onlyNumbersRegex = '^d+$';

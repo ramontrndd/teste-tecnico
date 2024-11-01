@@ -26,4 +26,9 @@ export class TaskService {
       headers: new HttpHeaders().set('Content-Type', 'application/json'),
     });
   }
+  updateTask(data: any): Observable<any> {
+    return this.http.patch(`${this.url}/updateTask/${data.id}`, data, {
+      headers: new HttpHeaders().set('Content-Type', 'application/json'),
+    });
+  }
 }
