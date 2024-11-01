@@ -19,7 +19,9 @@
           <span> Campo Obrigátorio</span>
         }
         @if (taskForm.controls['name'].errors?.['pattern']) {
-          <span>Apenas letras e numeros</span>
+          <span style="font-size: 0.6rem"
+            >apenas letras, números e sem espaços no início ou no final.</span
+          >
         }
       </mat-error>
     }
