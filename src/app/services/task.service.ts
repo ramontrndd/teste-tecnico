@@ -43,4 +43,7 @@ export class TaskService {
       }
     );
   }
+  moveTask(taskId: string, direction: 'up' | 'down'): Observable<void> {
+    return this.http.put<void>(`${this.url}/moveTask`, { taskId, direction });
+  }
 }

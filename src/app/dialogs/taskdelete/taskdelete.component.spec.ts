@@ -8,10 +8,9 @@ describe('TaskdeleteComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [TaskdeleteComponent]
-    })
-    .compileComponents();
-    
+      imports: [TaskdeleteComponent],
+    }).compileComponents();
+
     fixture = TestBed.createComponent(TaskdeleteComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

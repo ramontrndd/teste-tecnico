@@ -36,7 +36,7 @@ export class TaskComponent implements OnInit {
   displayedColumns: string[] = ['reorder', 'name', 'cost', 'endDate', 'action'];
   dataSource: MatTableDataSource<TaskModel> = new MatTableDataSource(); // Definindo dataSource como MatTableDataSource<TaskModel> com inicializador
   responseMessage: string = '';
-
+  tasks: any[] = [];
   constructor(
     private taskService: TaskService,
     private snackBar: SnackbarService,
@@ -156,5 +156,29 @@ export class TaskComponent implements OnInit {
       this.responseMessage = GlobalConstants.genericError;
     }
     this.snackBar.openSnackbar(this.responseMessage, 'error');
+  }
+  loadTasks(): void {
+    this.taskService.getTasks().subscribe((tasks) => {
+      this.tasks = tasks;
+    });
+  }
+
+  moveTask(taskId: string, direction: 'up' | 'down'): void {
+    this.taskService.moveTask(taskId, direction).subscribe(
+      (response: any) => {
+        this.responseMessage = response.message;
+        this.tableData();
+        this.snackBar.openSnackbar(this.responseMessage, 'success');
+        this.loadTasks(); // Recarregar as tarefas para atualizar a UI
+      },
+      (error: any) => {
+        if (error.error?.message) {
+          this.responseMessage = error.error.message;
+        } else {
+          this.responseMessage = GlobalConstants.genericError;
+        }
+        this.snackBar.openSnackbar(this.responseMessage, GlobalConstants.error);
+      }
+    );
   }
 }
