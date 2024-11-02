@@ -11,10 +11,20 @@
     <ng-container matColumnDef="reorder" style="width: 10px">
       <th mat-header-cell *matHeaderCellDef>Ordem</th>
       <td mat-cell *matCellDef="let task">
-        <button mat-icon-button (click)="moveTask(task.id, 'up')">
+        <button
+          class="btn-up"
+          mat-icon-button
+          (click)="moveTask(task.id, 'up')"
+          matTooltip="Subir"
+        >
           <mat-icon>arrow_upward_alt</mat-icon>
         </button>
-        <button mat-icon-button (click)="moveTask(task.id, 'down')">
+        <button
+          class="btn-down"
+          mat-icon-button
+          (click)="moveTask(task.id, 'down')"
+          matTooltip="Descer"
+        >
           <mat-icon>arrow_downward_alt</mat-icon>
         </button>
       </td>
@@ -29,12 +39,14 @@
     <!-- Coluna de Custo -->
     <ng-container matColumnDef="cost">
       <th mat-header-cell *matHeaderCellDef>Custo</th>
-      <td mat-cell *matCellDef="let task">{{ task.cost | currency: 'BRL' }}</td>
+      <td mat-cell *matCellDef="let task">
+        {{ task.cost | currency: 'BRL' }}
+      </td>
     </ng-container>
 
     <!-- Coluna de Data de Conclusão -->
     <ng-container matColumnDef="endDate">
-      <th mat-header-cell *matHeaderCellDef>Data de Conclusão</th>
+      <th mat-header-cell *matHeaderCellDef>Data Limite</th>
       <td mat-cell *matCellDef="let task">
         {{ task.endDate | date: 'dd/MM/yyyy' }}
       </td>
@@ -44,10 +56,14 @@
     <ng-container matColumnDef="action">
       <th mat-header-cell *matHeaderCellDef>Ações</th>
       <td mat-cell *matCellDef="let task">
-        <button mat-icon-button (click)="handleEditTask(task)">
+        <button class="btn-edit" mat-icon-button (click)="handleEditTask(task)">
           <mat-icon>edit</mat-icon>
         </button>
-        <button mat-icon-button (click)="handleDeleteTask(task)">
+        <button
+          class="btn-delete"
+          mat-icon-button
+          (click)="handleDeleteTask(task)"
+        >
           <mat-icon>delete</mat-icon>
         </button>
       </td>
@@ -63,7 +79,7 @@
       cdkDrag
       mat-row
       *matRowDef="let row; columns: displayedColumns"
-      class="draggable-row"
+      [ngClass]="{ 'high-cost': row.cost > 999 }"
     ></tr>
   </table>
   <div class="btn-task">
@@ -72,5 +88,3 @@
     </button>
   </div>
 </mat-card>
-
-<!-- Botão para adicionar uma nova tarefa -->

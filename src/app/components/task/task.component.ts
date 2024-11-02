@@ -17,6 +17,7 @@ import { Router } from '@angular/router';
 import { GlobalConstants } from '../../../shared/GlobalConstants';
 import { TaskdeleteComponent } from '../../dialogs/taskdelete/taskdelete.component';
 import { TaskModel } from '../../../shared/TaskModel';
+import { MatTooltip } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-task',
@@ -28,6 +29,7 @@ import { TaskModel } from '../../../shared/TaskModel';
     MatButtonModule,
     MatTableModule,
     DragDropModule,
+    MatTooltip,
   ],
   templateUrl: './task.component.html',
   styleUrls: ['./task.component.scss'],
@@ -180,5 +182,11 @@ export class TaskComponent implements OnInit {
         this.snackBar.openSnackbar(this.responseMessage, GlobalConstants.error);
       }
     );
+  }
+
+  isOverdue(endDate: string): boolean {
+    const today = new Date();
+    const dueDate = new Date(endDate);
+    return dueDate < today;
   }
 }
