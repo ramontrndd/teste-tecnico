@@ -1,13 +1,12 @@
 mat-card {
-  width: 1000px;
+  width: 750px;
   margin: 50px auto;
   padding: 20px;
 
   h1 {
+    font-size: 1rem;
     text-align: center;
     text-transform: uppercase;
-    letter-spacing: 5px;
-    font-family: 'Roboto', sans-serif;
     font-weight: bold;
   }
 }

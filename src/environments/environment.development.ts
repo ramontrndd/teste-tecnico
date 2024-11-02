@@ -1,4 +1,4 @@
 export const environment = {
-  apiUrl: 'http://localhost:4000/api',
+  apiUrl: 'https://backend-task-jokf.onrender.com/api',
   production: false,
 };
