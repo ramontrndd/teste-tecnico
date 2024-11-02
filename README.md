@@ -7,12 +7,12 @@ Base de dados
 Tabela: Tarefas
 
 Campos:
-
-    • Identificador da tarefa (chave primária)
-    • Nome da tarefa
-    • Custo (R$)
-    • Data limite
-    • Ordem de apresentação (campo numérico, não repetido, que servirá para ordenar os registros na tela)
+git
+• Identificador da tarefa (chave primária)
+• Nome da tarefa
+• Custo (R$)
+• Data limite
+• Ordem de apresentação (campo numérico, não repetido, que servirá para ordenar os registros na tela)
 
 Funcionalidades:
 
