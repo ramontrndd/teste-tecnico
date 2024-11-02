@@ -16,7 +16,7 @@ import {
 import { MAT_DATE_FORMATS } from '@angular/material/core';
 import * as _moment from 'moment';
 import { default as _rollupMoment } from 'moment';
-import 'moment/locale/pt-br'; // Importa o locale em português para o Moment.js
+import 'moment/locale/pt-br';
 import { TaskService } from '../../services/task.service';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -24,6 +24,7 @@ import { CurrencyMaskDirective } from '../../../shared/directives/currecy-mastk.
 import { GlobalConstants } from '../../../shared/GlobalConstants';
 import { dateNotExpiredValidator } from '../../../shared/dateNotExpiredValidator';
 import { SnackbarService } from '../../services/snackbar.service';
+
 const moment = _rollupMoment || _moment;
 moment.locale('pt-br'); // Define o locale para 'pt-br'
 
@@ -77,6 +78,7 @@ export class NewtaskComponent implements OnInit {
     private snackBar: SnackbarService
   ) {}
 
+  // Inicializa o formulário e define os valores iniciais com base nos dados do diálogo
   ngOnInit(): void {
     this.taskForm = this.fb.group({
       name: [
@@ -96,15 +98,17 @@ export class NewtaskComponent implements OnInit {
       this.taskForm.patchValue(this.dialogData.task);
     }
   }
+
+  // Lida com a submissão do formulário, chamando a função apropriada com base na ação do diálogo
   handleSubmit() {
     if (this.dialogData.action === 'Add') {
       this.onAdd();
     } else if (this.dialogData.action === 'Edit') {
       this.onEdit();
-    } else {
     }
   }
 
+  // Adiciona uma nova tarefa usando os dados do formulário
   onAdd() {
     const formData = this.taskForm.value;
     const data = {
@@ -132,6 +136,7 @@ export class NewtaskComponent implements OnInit {
     );
   }
 
+  // Edita uma tarefa existente usando os dados do formulário
   onEdit(): void {
     const formData = this.taskForm.value;
     const data = {

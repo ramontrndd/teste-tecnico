@@ -7,7 +7,7 @@ import {
   CdkDragDrop,
   moveItemInArray,
   DragDropModule,
-} from '@angular/cdk/drag-drop'; // Importando CdkDragDrop e moveItemInArray
+} from '@angular/cdk/drag-drop';
 import { SnackbarService } from '../../services/snackbar.service';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { CommonModule } from '@angular/common';
@@ -36,9 +36,10 @@ import { MatTooltip } from '@angular/material/tooltip';
 })
 export class TaskComponent implements OnInit {
   displayedColumns: string[] = ['reorder', 'name', 'cost', 'endDate', 'action'];
-  dataSource: MatTableDataSource<TaskModel> = new MatTableDataSource(); // Definindo dataSource como MatTableDataSource<TaskModel> com inicializador
+  dataSource: MatTableDataSource<TaskModel> = new MatTableDataSource();
   responseMessage: string = '';
   tasks: any[] = [];
+
   constructor(
     private taskService: TaskService,
     private snackBar: SnackbarService,
@@ -46,46 +47,46 @@ export class TaskComponent implements OnInit {
     private route: Router
   ) {}
 
+  // Método chamado ao inicializar o componente
   ngOnInit(): void {
     this.tableData();
   }
 
+  // Carrega os dados da tabela de tarefas
   tableData() {
     this.taskService.getTasks().subscribe(
       (response: TaskModel[]) => {
-        // Tipando a resposta como TaskModel[]
         this.dataSource = new MatTableDataSource(response);
       },
       (error: any) => {
-        this.handleError(error); // Chamada do método handleError para simplificar o tratamento de erros
+        this.handleError(error);
       }
     );
   }
 
+  // Método chamado ao arrastar e soltar uma tarefa para reordenar
   drop(event: CdkDragDrop<TaskModel[]>): void {
-    // Tipando o evento drop
     moveItemInArray(
       this.dataSource.data,
       event.previousIndex,
       event.currentIndex
-    ); // Movendo o item no array
-    this.dataSource.data = [...this.dataSource.data]; // Atualiza a referência da dataSource
+    );
+    this.dataSource.data = [...this.dataSource.data];
 
-    // Extrair os IDs da nova ordem
     const taskIds = this.dataSource.data.map((task) => task.id);
 
-    // Enviar a nova ordem para o backend
     this.taskService.reorderTasks(taskIds).subscribe(
       (response: any) => {
         this.snackBar.openSnackbar(response.message, 'success');
-        this.tableData(); // Atualiza a tabela após a reordenação
+        this.tableData();
       },
       (error: any) => {
-        this.handleError(error); // Chamada do método handleError para simplificar o tratamento de erros
+        this.handleError(error);
       }
     );
   }
 
+  // Abre o diálogo para adicionar uma nova tarefa
   handleAddTask() {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.data = {
@@ -103,8 +104,8 @@ export class TaskComponent implements OnInit {
     });
   }
 
+  // Abre o diálogo para editar uma tarefa existente
   handleEditTask(values: TaskModel) {
-    // Tipando valores como TaskModel
     const dialogConfig = new MatDialogConfig();
     dialogConfig.data = {
       action: 'Edit',
@@ -121,8 +122,8 @@ export class TaskComponent implements OnInit {
     });
   }
 
+  // Abre o diálogo para confirmar a exclusão de uma tarefa
   handleDeleteTask(values: TaskModel) {
-    // Tipando valores como TaskModel
     const dialogConfig = new MatDialogConfig();
     dialogConfig.data = {
       message: '' + values.name + ' tarefa ',
@@ -136,8 +137,8 @@ export class TaskComponent implements OnInit {
     });
   }
 
+  // Exclui uma tarefa pelo ID
   deleteTask(id: string) {
-    // Tipando o id como string
     this.taskService.deleteTask(id).subscribe(
       (response: any) => {
         this.tableData();
@@ -145,7 +146,7 @@ export class TaskComponent implements OnInit {
         this.snackBar.openSnackbar(response.message, 'success');
       },
       (error: any) => {
-        this.handleError(error); // Chamada do método handleError para simplificar o tratamento de erros
+        this.handleError(error);
       }
     );
   }
@@ -159,19 +160,22 @@ export class TaskComponent implements OnInit {
     }
     this.snackBar.openSnackbar(this.responseMessage, 'error');
   }
+
+  // Carrega as tarefas do serviço
   loadTasks(): void {
     this.taskService.getTasks().subscribe((tasks) => {
       this.tasks = tasks;
     });
   }
 
+  // Move uma tarefa para cima ou para baixo na lista
   moveTask(taskId: string, direction: 'up' | 'down'): void {
     this.taskService.moveTask(taskId, direction).subscribe(
       (response: any) => {
         this.responseMessage = response.message;
         this.tableData();
         this.snackBar.openSnackbar(this.responseMessage, 'success');
-        this.loadTasks(); // Recarregar as tarefas para atualizar a UI
+        this.loadTasks();
       },
       (error: any) => {
         if (error.error?.message) {
@@ -183,7 +187,6 @@ export class TaskComponent implements OnInit {
       }
     );
   }
-
   isOverdue(endDate: string): boolean {
     const today = new Date();
     const dueDate = new Date(endDate);
