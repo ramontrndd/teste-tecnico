@@ -3,7 +3,11 @@ import { TaskService } from '../../services/task.service';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { CdkDrag, CdkDragHandle } from '@angular/cdk/drag-drop';
+import {
+  CdkDragDrop,
+  moveItemInArray,
+  DragDropModule,
+} from '@angular/cdk/drag-drop'; // Importando CdkDragDrop e moveItemInArray
 import { SnackbarService } from '../../services/snackbar.service';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { CommonModule } from '@angular/common';
@@ -12,6 +16,7 @@ import { NewtaskComponent } from '../../dialogs/newtask/newtask.component';
 import { Router } from '@angular/router';
 import { GlobalConstants } from '../../../shared/GlobalConstants';
 import { TaskdeleteComponent } from '../../dialogs/taskdelete/taskdelete.component';
+import { TaskModel } from '../../../shared/TaskModel';
 
 @Component({
   selector: 'app-task',
@@ -21,14 +26,17 @@ import { TaskdeleteComponent } from '../../dialogs/taskdelete/taskdelete.compone
     MatCardModule,
     MatIconModule,
     MatButtonModule,
-    CdkDrag,
-    CdkDragHandle,
     MatTableModule,
+    DragDropModule,
   ],
   templateUrl: './task.component.html',
   styleUrls: ['./task.component.scss'],
 })
 export class TaskComponent implements OnInit {
+  displayedColumns: string[] = ['reorder', 'name', 'cost', 'endDate', 'action'];
+  dataSource: MatTableDataSource<TaskModel> = new MatTableDataSource(); // Definindo dataSource como MatTableDataSource<TaskModel> com inicializador
+  responseMessage: string = '';
+
   constructor(
     private taskService: TaskService,
     private snackBar: SnackbarService,
@@ -40,22 +48,38 @@ export class TaskComponent implements OnInit {
     this.tableData();
   }
 
-  displayedColumns: string[] = ['reorder', 'name', 'cost', 'endDate', 'action'];
-  dataSource: any;
-  responseMessage: any;
-
   tableData() {
     this.taskService.getTasks().subscribe(
-      (response: any) => {
+      (response: TaskModel[]) => {
+        // Tipando a resposta como TaskModel[]
         this.dataSource = new MatTableDataSource(response);
       },
       (error: any) => {
-        if (error.error?.message) {
-          this.responseMessage = error.error.message;
-        } else {
-          this.responseMessage = GlobalConstants.genericError;
-        }
-        this.snackBar.openSnackbar(this.responseMessage, GlobalConstants.error);
+        this.handleError(error); // Chamada do método handleError para simplificar o tratamento de erros
+      }
+    );
+  }
+
+  drop(event: CdkDragDrop<TaskModel[]>): void {
+    // Tipando o evento drop
+    moveItemInArray(
+      this.dataSource.data,
+      event.previousIndex,
+      event.currentIndex
+    ); // Movendo o item no array
+    this.dataSource.data = [...this.dataSource.data]; // Atualiza a referência da dataSource
+
+    // Extrair os IDs da nova ordem
+    const taskIds = this.dataSource.data.map((task) => task.id);
+
+    // Enviar a nova ordem para o backend
+    this.taskService.reorderTasks(taskIds).subscribe(
+      (response: any) => {
+        this.snackBar.openSnackbar(response.message, 'success');
+        this.tableData(); // Atualiza a tabela após a reordenação
+      },
+      (error: any) => {
+        this.handleError(error); // Chamada do método handleError para simplificar o tratamento de erros
       }
     );
   }
@@ -77,7 +101,8 @@ export class TaskComponent implements OnInit {
     });
   }
 
-  handleEditTask(values: any) {
+  handleEditTask(values: TaskModel) {
+    // Tipando valores como TaskModel
     const dialogConfig = new MatDialogConfig();
     dialogConfig.data = {
       action: 'Edit',
@@ -94,7 +119,8 @@ export class TaskComponent implements OnInit {
     });
   }
 
-  handleDeleteTask(values: any) {
+  handleDeleteTask(values: TaskModel) {
+    // Tipando valores como TaskModel
     const dialogConfig = new MatDialogConfig();
     dialogConfig.data = {
       message: '' + values.name + ' tarefa ',
@@ -108,7 +134,8 @@ export class TaskComponent implements OnInit {
     });
   }
 
-  deleteTask(id: any) {
+  deleteTask(id: string) {
+    // Tipando o id como string
     this.taskService.deleteTask(id).subscribe(
       (response: any) => {
         this.tableData();
@@ -116,13 +143,18 @@ export class TaskComponent implements OnInit {
         this.snackBar.openSnackbar(response.message, 'success');
       },
       (error: any) => {
-        if (error.error?.message) {
-          this.responseMessage = error.error.message;
-        } else {
-          this.responseMessage = GlobalConstants.genericError;
-        }
-        this.snackBar.openSnackbar(this.responseMessage, 'error');
+        this.handleError(error); // Chamada do método handleError para simplificar o tratamento de erros
       }
     );
+  }
+
+  // Método para tratar erros, centralizando o tratamento de erros
+  private handleError(error: any) {
+    if (error.error?.message) {
+      this.responseMessage = error.error.message;
+    } else {
+      this.responseMessage = GlobalConstants.genericError;
+    }
+    this.snackBar.openSnackbar(this.responseMessage, 'error');
   }
 }

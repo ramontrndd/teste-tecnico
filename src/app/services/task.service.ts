@@ -33,8 +33,14 @@ export class TaskService {
     });
   }
 
-  // Adiciona o método para reorganizar as tarefas
-  reorderTasks(taskIds: string[]): Observable<void> {
-    return this.http.post<void>(`${this.url}/reorderTasks`, { taskIds }); // Envia o array de taskIds para o backend
+  reorderTasks(taskIds: string[]): Observable<any> {
+    return this.http.put(
+      `${this.url}/reorderTasks`,
+      { taskIds },
+      {
+        // Atualiza a chamada para PUT e envia os IDs
+        headers: new HttpHeaders().set('Content-Type', 'application/json'),
+      }
+    );
   }
 }
