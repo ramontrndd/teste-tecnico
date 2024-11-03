@@ -18,6 +18,7 @@ import { GlobalConstants } from '../../../shared/GlobalConstants';
 import { TaskdeleteComponent } from '../../dialogs/taskdelete/taskdelete.component';
 import { TaskModel } from '../../../shared/TaskModel';
 import { MatTooltip } from '@angular/material/tooltip';
+import { NgxUiLoaderService } from 'ngx-ui-loader';
 
 @Component({
   selector: 'app-task',
@@ -44,7 +45,8 @@ export class TaskComponent implements OnInit {
     private taskService: TaskService,
     private snackBar: SnackbarService,
     private dialog: MatDialog,
-    private route: Router
+    private route: Router,
+    private ngx: NgxUiLoaderService
   ) {}
 
   // Método chamado ao inicializar o componente
@@ -74,9 +76,10 @@ export class TaskComponent implements OnInit {
     this.dataSource.data = [...this.dataSource.data];
 
     const taskIds = this.dataSource.data.map((task) => task.id);
-
+    this.ngx.start();
     this.taskService.reorderTasks(taskIds).subscribe(
       (response: any) => {
+        this.ngx.stop();
         this.snackBar.openSnackbar(response.message, 'success');
         this.tableData();
       },
@@ -139,8 +142,10 @@ export class TaskComponent implements OnInit {
 
   // Exclui uma tarefa pelo ID
   deleteTask(id: string) {
+    this.ngx.start();
     this.taskService.deleteTask(id).subscribe(
       (response: any) => {
+        this.ngx.stop();
         this.tableData();
         this.responseMessage = response?.message;
         this.snackBar.openSnackbar(response.message, 'success');
@@ -149,16 +154,6 @@ export class TaskComponent implements OnInit {
         this.handleError(error);
       }
     );
-  }
-
-  // Método para tratar erros, centralizando o tratamento de erros
-  private handleError(error: any) {
-    if (error.error?.message) {
-      this.responseMessage = error.error.message;
-    } else {
-      this.responseMessage = GlobalConstants.genericError;
-    }
-    this.snackBar.openSnackbar(this.responseMessage, 'error');
   }
 
   // Carrega as tarefas do serviço
@@ -170,26 +165,30 @@ export class TaskComponent implements OnInit {
 
   // Move uma tarefa para cima ou para baixo na lista
   moveTask(taskId: string, direction: 'up' | 'down'): void {
+    this.ngx.start();
     this.taskService.moveTask(taskId, direction).subscribe(
       (response: any) => {
+        this.ngx.stop();
         this.responseMessage = response.message;
         this.tableData();
         this.snackBar.openSnackbar(this.responseMessage, 'success');
         this.loadTasks();
       },
       (error: any) => {
-        if (error.error?.message) {
-          this.responseMessage = error.error.message;
-        } else {
-          this.responseMessage = GlobalConstants.genericError;
-        }
-        this.snackBar.openSnackbar(this.responseMessage, GlobalConstants.error);
+        this.ngx.stop();
+        this.handleError(error);
       }
     );
   }
-  isOverdue(endDate: string): boolean {
-    const today = new Date();
-    const dueDate = new Date(endDate);
-    return dueDate < today;
+
+  // Método para tratar erros, centralizando o tratamento de erros
+  private handleError(error: any) {
+    this.ngx.stop();
+    if (error.error?.message) {
+      this.responseMessage = error.error.message;
+    } else {
+      this.responseMessage = GlobalConstants.genericError;
+    }
+    this.snackBar.openSnackbar(this.responseMessage, 'error');
   }
 }

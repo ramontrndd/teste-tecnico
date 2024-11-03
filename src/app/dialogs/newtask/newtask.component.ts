@@ -24,6 +24,7 @@ import { CurrencyMaskDirective } from '../../../shared/directives/currecy-mastk.
 import { GlobalConstants } from '../../../shared/GlobalConstants';
 import { dateNotExpiredValidator } from '../../../shared/dateNotExpiredValidator';
 import { SnackbarService } from '../../services/snackbar.service';
+import { NgxUiLoaderService } from 'ngx-ui-loader';
 
 const moment = _rollupMoment || _moment;
 moment.locale('pt-br'); // Define o locale para 'pt-br'
@@ -75,7 +76,8 @@ export class NewtaskComponent implements OnInit {
     private fb: FormBuilder,
     private taskService: TaskService,
     private dialogRef: MatDialogRef<NewtaskComponent>,
-    private snackBar: SnackbarService
+    private snackBar: SnackbarService,
+    private ngx: NgxUiLoaderService
   ) {}
 
   // Inicializa o formulário e define os valores iniciais com base nos dados do diálogo
@@ -118,14 +120,17 @@ export class NewtaskComponent implements OnInit {
         ? moment(formData.endDate).format('YYYY-MM-DD')
         : null,
     };
+    this.ngx.start();
     this.taskService.addTask(data).subscribe(
       (response) => {
+        this.ngx.stop();
         this.dialogRef.close();
         this.taskOnAdd.emit();
         this.responseMessage = response.message;
         this.snackBar.openSnackbar(this.responseMessage, 'success');
       },
       (error: any) => {
+        this.ngx.stop();
         if (error.error?.message) {
           this.responseMessage = error.error.message;
         } else {
@@ -147,14 +152,17 @@ export class NewtaskComponent implements OnInit {
         ? moment(formData.endDate).format('YYYY-MM-DD')
         : null,
     };
+    this.ngx.start();
     this.taskService.updateTask(data).subscribe(
       (response) => {
+        this.ngx.stop();
         this.dialogRef.close();
         this.taskOnEdit.emit();
         this.responseMessage = response.message;
         this.snackBar.openSnackbar(this.responseMessage, 'success');
       },
       (error: any) => {
+        this.ngx.stop();
         if (error.error?.message) {
           this.responseMessage = error.error.message;
         } else {
