@@ -26,7 +26,7 @@ const ngxUiLoaderConfig: NgxUiLoaderConfig = {
   masterLoaderId: 'master',
   overlayBorderRadius: '0',
   overlayColor: 'rgba(40, 40, 40, 0.8)',
-  pbColor: 'red',
+  pbColor: '#3F51B5',
   pbDirection: 'ltr',
   pbThickness: 3,
   hasProgressBar: true,

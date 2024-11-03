@@ -14,6 +14,7 @@ mat-card {
 th,
 td {
   text-align: center;
+  font-display: swap;
 }
 .btn-task {
   display: flex;
@@ -73,10 +74,10 @@ mat-icon {
 @media (max-width: 768px) {
   mat-card {
     width: auto;
-    margin: 10px;
+    margin: 100px auto;
     padding: 0;
     h1 {
-      font-size: 0.7rem;
+      font-size: 0.5rem;
     }
   }
   .table-container {
