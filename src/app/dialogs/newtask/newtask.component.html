@@ -23,6 +23,11 @@
             >apenas letras, números e sem espaços no início ou no final.</span
           >
         }
+        @if (taskForm.controls['name'].errors?.['maxlength']) {
+          <span style="font-size: 0.65rem">
+            Excedeu o limite de 50 caracteres permitido.</span
+          >
+        }
       </mat-error>
     }
   </mat-form-field>
@@ -56,16 +61,12 @@
       placeholder="Selecione uma data valida"
     />
     @if (
-      (taskForm.controls['endDate'].touched &&
-        taskForm.controls['endDate'].invalid) ||
-      taskForm.controls['endDate'].dirty
+      taskForm.controls['endDate'].touched &&
+      taskForm.controls['endDate'].invalid
     ) {
       <mat-error>
         @if (taskForm.controls['endDate'].errors?.['required']) {
           <span> Campo Obrigátorio</span>
-        }
-        @if (taskForm.controls['endDate'].errors?.['dateExpired']) {
-          <span> Selecione uma data atual para a tarefa.</span>
         }
       </mat-error>
     }

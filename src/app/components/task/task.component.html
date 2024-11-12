@@ -35,14 +35,14 @@
     <!-- Coluna de Nome -->
     <ng-container matColumnDef="name">
       <th mat-header-cell *matHeaderCellDef>Nome</th>
-      <td mat-cell *matCellDef="let task">{{ task.name }}</td>
+      <td mat-cell *matCellDef="let task">{{ task.name | truncate }}</td>
     </ng-container>
 
     <!-- Coluna de Custo -->
     <ng-container matColumnDef="cost">
       <th mat-header-cell *matHeaderCellDef>Custo</th>
       <td mat-cell *matCellDef="let task">
-        {{ task.cost | currency: 'BRL' }}
+        {{ task.cost | currency: 'BRL' : 'symbol-narrow' : '1.2-2' }}
       </td>
     </ng-container>
 
@@ -50,7 +50,7 @@
     <ng-container matColumnDef="endDate">
       <th mat-header-cell *matHeaderCellDef>Data Limite</th>
       <td mat-cell *matCellDef="let task">
-        {{ task.endDate | date: 'dd/MM/yyyy' }}
+        {{ task.endDate | date: 'dd/MM/yyyy' : '+0000' }}
       </td>
     </ng-container>
 

@@ -2,6 +2,7 @@ import { Component, EventEmitter, Inject, OnInit, Output } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
+  MaxLengthValidator,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
@@ -22,9 +23,9 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { CurrencyMaskDirective } from '../../../shared/directives/currecy-mastk.directive';
 import { GlobalConstants } from '../../../shared/GlobalConstants';
-import { dateNotExpiredValidator } from '../../../shared/dateNotExpiredValidator';
 import { SnackbarService } from '../../services/snackbar.service';
 import { NgxUiLoaderService } from 'ngx-ui-loader';
+import { CommonModule } from '@angular/common';
 
 const moment = _rollupMoment || _moment;
 moment.locale('pt-br'); // Define o locale para 'pt-br'
@@ -50,6 +51,7 @@ export const MY_FORMATS = {
     { provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true } },
   ],
   imports: [
+    CommonModule,
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
@@ -87,11 +89,12 @@ export class NewtaskComponent implements OnInit {
         null,
         [
           Validators.required,
+          Validators.maxLength(50),
           Validators.pattern(GlobalConstants.nameRegexWithAccents),
         ],
       ],
       cost: [null, [Validators.required]],
-      endDate: [null, [Validators.required, dateNotExpiredValidator()]],
+      endDate: [null, [Validators.required]],
     });
     if (this.dialogData.action === 'Edit') {
       this.dialogAction = 'Edit';

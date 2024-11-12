@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, LOCALE_ID } from '@angular/core';
 import { TaskService } from '../../services/task.service';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
@@ -10,7 +10,7 @@ import {
 } from '@angular/cdk/drag-drop';
 import { SnackbarService } from '../../services/snackbar.service';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { CommonModule } from '@angular/common';
+import { CommonModule, registerLocaleData } from '@angular/common';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { NewtaskComponent } from '../../dialogs/newtask/newtask.component';
 import { Router } from '@angular/router';
@@ -19,6 +19,8 @@ import { TaskdeleteComponent } from '../../dialogs/taskdelete/taskdelete.compone
 import { TaskModel } from '../../../shared/TaskModel';
 import { MatTooltip } from '@angular/material/tooltip';
 import { NgxUiLoaderService } from 'ngx-ui-loader';
+import localePt from '@angular/common/locales/pt';
+import { TruncatePipe } from '../../pipes/truncate/truncate.pipe';
 
 @Component({
   selector: 'app-task',
@@ -31,7 +33,9 @@ import { NgxUiLoaderService } from 'ngx-ui-loader';
     MatTableModule,
     DragDropModule,
     MatTooltip,
+    TruncatePipe,
   ],
+  providers: [{ provide: LOCALE_ID, useValue: 'pt-BR' }],
   templateUrl: './task.component.html',
   styleUrls: ['./task.component.scss'],
 })
@@ -47,7 +51,9 @@ export class TaskComponent implements OnInit {
     private dialog: MatDialog,
     private route: Router,
     private ngx: NgxUiLoaderService
-  ) {}
+  ) {
+    registerLocaleData(localePt, 'pt-BR');
+  }
 
   // Método chamado ao inicializar o componente
   ngOnInit(): void {
